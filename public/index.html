@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Heart Disease Predictor</title>
+  <style>
+    body { font-family: Arial; max-width: 500px; margin: 40px auto; padding: 0 16px; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 6px; margin-top: 4px; }
+    button { margin-top: 20px; padding: 10px; width: 100%; cursor: pointer; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Heart Disease Predictor</h2>
+  <form id="form">
+    <label>Age <input name="Age" type="number" value="40" required></label>
+    <label>Sex
+      <select name="Sex"><option>M</option><option>F</option></select>
+    </label>
+    <label>Chest Pain Type
+      <select name="ChestPainType"><option>ATA</option><option>NAP</option><option>ASY</option><option>TA</option></select>
+    </label>
+    <label>Resting BP <input name="RestingBP" type="number" value="140" required></label>
+    <label>Cholesterol <input name="Cholesterol" type="number" value="289" required></label>
+    <label>Fasting BS
+      <select name="FastingBS"><option>0</option><option>1</option></select>
+    </label>
+    <label>Resting ECG
+      <select name="RestingECG"><option>Normal</option><option>ST</option><option>LVH</option></select>
+    </label>
+    <label>Max HR <input name="MaxHR" type="number" value="172" required></label>
+    <label>Exercise Angina
+      <select name="ExerciseAngina"><option>N</option><option>Y</option></select>
+    </label>
+    <label>Oldpeak <input name="Oldpeak" type="number" step="0.1" value="0" required></label>
+    <label>ST Slope
+      <select name="ST_Slope"><option>Up</option><option>Flat</option><option>Down</option></select>
+    </label>
+    <button type="submit">Predict</button>
+  </form>
+  <div id="result"></div>
+  <p style="font-size:13px; color:#666;">
+    Ye sirf educational purpose ke liye hai, medical advice nahi.
+  </p>
+
+  <script>
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+
+      // Convert numeric fields to numbers
+      ["Age", "RestingBP", "Cholesterol", "FastingBS", "MaxHR", "Oldpeak"].forEach(k => data[k] = Number(data[k]));
+
+      const res = await fetch("/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const out = await res.json();
+      document.getElementById("result").innerText = res.ok
+        ? `Risk: ${(out.heart_disease_probability * 100).toFixed(1)}% → ${out.prediction ? "High risk" : "Low risk"}`
+        : `Error: ${out.error}`;
+    });
+  </script>
+</body>
+</html>

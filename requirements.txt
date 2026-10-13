@@ -1,0 +1,15 @@
+# Notebook / model training dependencies
+pandas>=2.2.0
+numpy>=1.26.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+scikit-learn>=1.5.0
+xgboost>=2.1.0
+joblib>=1.4.0
+ipykernel>=6.29.0
+
+# API dependencies for serving the trained model
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.7.0
+
